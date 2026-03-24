@@ -150,5 +150,11 @@ playwright/.cache/
 .env.test.local
 .env.production.local
 
-# Mac-i süsteemifailid
+# Maci süsteemifailid
 .DS_Store
+
+# Playwright
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
