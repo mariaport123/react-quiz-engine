@@ -45,6 +45,16 @@ const App: React.FC = () => {
     }, 1200);
   };
 
+  // Generate personalized feedback based on score percentage
+  const getFeedbackMessage = (score: number, total: number) => {
+    const percentage = (score / total) * 100;
+
+    if (percentage === 100) return "Suurepärane! Oled tõeline statistikaguru ja tunned tarbijahinnaindeksit peast.";
+    if (percentage >= 70) return "Väga tubli! Sul on tarbijahinnaindeksist ja selle muutustest selge pilt ees.";
+    if (percentage >= 50) return "Hea algus! Tunned põhitõdesid, kuid mõned detailid vajavad veel üle vaatamist.";
+    return "Sinu teekond arvude maailmas on alanud! Kui soovid oma teadmisi täiendada, siis Statistikaameti andmebaasid pakuvad palju avastamisrõõmu.";
+  };
+
   // Consistent brand header component
   const Header = ({ title }: { title: string }) => (
     <header className="app-header">
@@ -58,12 +68,20 @@ const App: React.FC = () => {
     </header>
   );
 
+  // Results View
   if (isFinished) {
     return (
       <div className="app-wrapper">
         <Header title="Tulemused" />
+
         <main className="container">
-          <p className="score-display">{score} / {questions.length}</p>
+          <div className="results-summary">
+            <p className="score-display">{score} / {questions.length}</p>
+            <p className="personalized-message">
+              {getFeedbackMessage(score, questions.length)}
+            </p>
+          </div>
+
           <table className="results-table">
             <thead>
               <tr>
@@ -84,26 +102,41 @@ const App: React.FC = () => {
               ))}
             </tbody>
           </table>
-          <button className="retry-btn" onClick={() => window.location.reload()}>Proovi uuesti</button>
+
+          <button className="retry-btn" onClick={() => window.location.reload()}>
+            Proovi uuesti
+          </button>
         </main>
       </div>
     );
   }
 
+  // Quiz View
   return (
     <div className="app-wrapper">
       <Header title="Viktoriin" />
+
       <main className="container">
         <span className="step-indicator">KÜSIMUS {currentStep + 1} / {questions.length}</span>
         <h2>{questions[currentStep].questionText}</h2>
+
         <div className="options-list">
           {shuffledOptions.map((option) => (
-            <button key={option.id} onClick={() => handleAnswer(option.id, option.text)} disabled={!!feedback}>
+            <button 
+              key={option.id} 
+              onClick={() => handleAnswer(option.id, option.text)} 
+              disabled={!!feedback}
+            >
               {option.text}
             </button>
           ))}
         </div>
-        {feedback && <div className={`feedback-alert ${feedback === 'Õige vastus!' ? 'correct' : 'wrong'}`}>{feedback}</div>}
+
+        {feedback && (
+          <div className={`feedback-alert ${feedback === 'Õige vastus!' ? 'correct' : 'wrong'}`}>
+            {feedback}
+          </div>
+        )}
       </main>
     </div>
   );

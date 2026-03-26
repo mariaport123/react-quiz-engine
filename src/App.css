@@ -24,7 +24,7 @@ body {
     background-image: radial-gradient(circle, var(--stat-gray-divider) 0.8px, transparent 0.8px);
     background-size: var(--grid-step) var(--grid-step);
     background-position: center top; 
-    padding: 60px 0; 
+    padding: 30px 0; 
 }
 
 .header-content {
@@ -165,6 +165,16 @@ button:hover:not(:disabled) {
     padding: 1.5rem;
     border-left: 8px solid;
     font-weight: 700;
+}
+
+.personalized-message {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 20px 0 40px 0;
+    line-height: 1.4;
+    max-width: 600px;
+    border-left: 4px solid var(--stat-black);
+    padding-left: 20px;
 }
 
 .feedback-alert.correct { background: #F2F8F5; border-color: var(--stat-success); color: var(--stat-success); }
