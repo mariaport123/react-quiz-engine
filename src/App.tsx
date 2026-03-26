@@ -1,16 +1,16 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { questions } from './quizData';
 import { UserResult } from './types';
 import './App.css';
 
-const App = () => {
+const App: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [results, setResults] = useState<UserResult[]>([]);
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  // Shuffle options using Fisher-Yates algorithm whenever the question changes
+  // Randomize options using Fisher-Yates algorithm
   const shuffledOptions = useMemo(() => {
     const options = [...questions[currentStep].options];
     for (let i = options.length - 1; i > 0; i--) {
@@ -20,6 +20,7 @@ const App = () => {
     return options;
   }, [currentStep]);
 
+  // Handle answer logic
   const handleAnswer = (optionId: string, optionText: string) => {
     const currentQuestion = questions[currentStep];
     const isCorrect = optionId === currentQuestion.correctAnswerId;
@@ -44,58 +45,56 @@ const App = () => {
     }, 1200);
   };
 
+  // Consistent brand header component
+  const Header = ({ title }: { title: string }) => (
+    <header className="app-header">
+      <div className="header-content">
+        <div className="logo-container">
+          <img src="/ES_Logo.svg" alt="Statistikaamet" className="stat-logo" />
+        </div>
+        <div className="header-divider"></div>
+        <h1 className="header-title">{title}</h1>
+      </div>
+    </header>
+  );
+
   if (isFinished) {
     return (
-      <div className="container">
-        <h1>Tulemused</h1>
-        <p className="score-text">{score} / {questions.length}</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Küsimus</th>
-              <th>Vastus</th>
-              <th>Tulemus</th>
-            </tr>
-          </thead>
-          <tbody>
-            {results.map((res, i) => (
-              <tr key={i}>
-                <td>{res.question}</td>
-                <td>{res.userAnswer}</td>
-                <td className={res.isCorrect ? "text-success" : "text-error"}>
-                  {res.isCorrect ? "Õige" : "Vale"}
-                </td>
+      <div className="app-wrapper">
+        <Header title="Tulemused" />
+        <main className="container">
+          <p className="score-display">{score} / {questions.length}</p>
+          <table className="results-table">
+            <thead>
+              <tr>
+                <th>Küsimus</th>
+                <th>Vastus</th>
+                <th>Tulemus</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <button className="retry-btn" onClick={() => window.location.reload()}>Proovi uuesti</button>
+            </thead>
+            <tbody>
+              {results.map((res, i) => (
+                <tr key={i}>
+                  <td>{res.question}</td>
+                  <td>{res.userAnswer}</td>
+                  <td className={res.isCorrect ? "status-correct" : "status-wrong"}>
+                    {res.isCorrect ? "Õige" : "Vale"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button className="retry-btn" onClick={() => window.location.reload()}>Proovi uuesti</button>
+        </main>
       </div>
     );
   }
 
   return (
-    <>
-      <header className="app-header">
-        <div className="logo">
-          {/* Row 1: Only dots */}
-          <div className="dot"></div><div className="dot"></div><div className="dot"></div>
-          <div></div>
-
-          {/* Row 2: Middle dots, aligned with the top of "EESTI" */}
-          <div className="dot"></div><div className="dot"></div><div className="dot"></div>
-          <div className="logo-text">
-            <span>EESTI</span>
-            <span>STATISTIKA</span>
-          </div>
-
-          {/* Row 3: Bottom dots, aligned with the bottom of "STATISTIKA" */}
-          <div className="dot"></div><div className="dot"></div><div className="dot"></div>
-        </div>
-      </header>
-
-      <div className="container">
-        <span className="step-indicator">Küsimus {currentStep + 1} / {questions.length}</span>
+    <div className="app-wrapper">
+      <Header title="Viktoriin" />
+      <main className="container">
+        <span className="step-indicator">KÜSIMUS {currentStep + 1} / {questions.length}</span>
         <h2>{questions[currentStep].questionText}</h2>
         <div className="options-list">
           {shuffledOptions.map((option) => (
@@ -105,8 +104,8 @@ const App = () => {
           ))}
         </div>
         {feedback && <div className={`feedback-alert ${feedback === 'Õige vastus!' ? 'correct' : 'wrong'}`}>{feedback}</div>}
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 
