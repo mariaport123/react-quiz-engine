@@ -54,9 +54,18 @@ npx playwright test
 - Incorrect answer handling.
 - Display of the final results table and personalized message.
 
+## Project Links
+
+- **Code Repository:** [GitHub](https://github.com/mariaport123/react-quiz-engine)
+- **Live Demo:** [Vercel](react-quiz-engine-habzlscd4-mariaport123s-projects.vercel.app)
+
 ## Tech Stack 
 
 - **Framework:** React 18 (Vite)
 - **Language:** TypeScript
 - **Styling:** CSS3 (Custom properties & Grid system)
 - **Testing:** Playwright E2E
+
+## Author
+
+- **Maria Port** – [GitHub](https://github.com/mariaport123)
