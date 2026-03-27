@@ -3,6 +3,15 @@ import { questions } from './quizData';
 import { UserResult } from './types';
 import './App.css';
 
+// TypeScript support for the official web component
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'stat-ee-header-social': any;
+    }
+  }
+}
+
 const App: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
@@ -10,7 +19,7 @@ const App: React.FC = () => {
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  // Randomize options using Fisher-Yates algorithm
+  // Shuffle current question's options using Fisher-Yates algorithm
   const shuffledOptions = useMemo(() => {
     const options = [...questions[currentStep].options];
     for (let i = options.length - 1; i > 0; i--) {
@@ -20,21 +29,25 @@ const App: React.FC = () => {
     return options;
   }, [currentStep]);
 
-  // Handle answer logic
+  // Handle user answer selection
   const handleAnswer = (optionId: string, optionText: string) => {
     const currentQuestion = questions[currentStep];
     const isCorrect = optionId === currentQuestion.correctAnswerId;
 
     if (isCorrect) setScore((prev) => prev + 1);
 
-    setResults([...results, {
-      question: currentQuestion.questionText,
-      userAnswer: optionText,
-      isCorrect: isCorrect
-    }]);
+    setResults([
+      ...results,
+      {
+        question: currentQuestion.questionText,
+        userAnswer: optionText,
+        isCorrect
+      }
+    ]);
 
     setFeedback(isCorrect ? "Õige vastus!" : "Vale vastus!");
 
+    // Move to next question or finish quiz after delay
     setTimeout(() => {
       setFeedback(null);
       if (currentStep + 1 < questions.length) {
@@ -45,35 +58,38 @@ const App: React.FC = () => {
     }, 1200);
   };
 
-  // Generate personalized feedback based on score percentage
+  // Return personalized feedback message based on score
   const getFeedbackMessage = (score: number, total: number) => {
     const percentage = (score / total) * 100;
-
     if (percentage === 100) return "Suurepärane! Oled tõeline statistikaguru ja tunned tarbijahinnaindeksit peast.";
     if (percentage >= 70) return "Väga tubli! Sul on tarbijahinnaindeksist ja selle muutustest selge pilt ees.";
     if (percentage >= 50) return "Hea algus! Tunned põhitõdesid, kuid mõned detailid vajavad veel üle vaatamist.";
     return "Sinu teekond arvude maailmas on alanud! Kui soovid oma teadmisi täiendada, siis Statistikaameti andmebaasid pakuvad palju avastamisrõõmu.";
   };
 
-  // Consistent brand header component
+  // Header component with logo and title
   const Header = ({ title }: { title: string }) => (
-    <header className="app-header">
-      <div className="header-content">
-        <div className="logo-container">
-          <img src="/ES_Logo.svg" alt="Statistikaamet" className="stat-logo" />
+    <div className="header-wrapper">
+      <div className="official-black-bar"></div>
+      <header className="app-header">
+        <div className="header-content">
+          <div className="logo-mask">
+            <img src="/ES_Logo.svg" alt="Statistikaamet" className="stat-logo" />
+          </div>
+          <div className="header-divider"></div>
+          <div className="text-mask">
+            <h1 className="header-title">{title}</h1>
+          </div>
         </div>
-        <div className="header-divider"></div>
-        <h1 className="header-title">{title}</h1>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 
-  // Results View
+  // Display final results page
   if (isFinished) {
     return (
       <div className="app-wrapper">
         <Header title="Tulemused" />
-
         <main className="container">
           <div className="results-summary">
             <p className="score-display">{score} / {questions.length}</p>
@@ -96,14 +112,14 @@ const App: React.FC = () => {
                   <td>{res.question}</td>
                   <td>{res.userAnswer}</td>
                   <td className={res.isCorrect ? "status-correct" : "status-wrong"}>
-                    {res.isCorrect ? "Õige" : "Vale"}
+                    {res.isCorrect ? "✓ Õige" : "✕ Vale"}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          <button className="retry-btn" onClick={() => window.location.reload()}>
+          <button className="retry-btn" style={{ marginTop: '40px' }} onClick={() => window.location.reload()}>
             Proovi uuesti
           </button>
         </main>
@@ -111,20 +127,18 @@ const App: React.FC = () => {
     );
   }
 
-  // Quiz View
+  // Display quiz questions
   return (
     <div className="app-wrapper">
       <Header title="Viktoriin" />
-
       <main className="container">
         <span className="step-indicator">KÜSIMUS {currentStep + 1} / {questions.length}</span>
         <h2>{questions[currentStep].questionText}</h2>
-
         <div className="options-list">
           {shuffledOptions.map((option) => (
-            <button 
-              key={option.id} 
-              onClick={() => handleAnswer(option.id, option.text)} 
+            <button
+              key={option.id}
+              onClick={() => handleAnswer(option.id, option.text)}
               disabled={!!feedback}
             >
               {option.text}
@@ -132,6 +146,7 @@ const App: React.FC = () => {
           ))}
         </div>
 
+        {/* Feedback for selected answer */}
         {feedback && (
           <div className={`feedback-alert ${feedback === 'Õige vastus!' ? 'correct' : 'wrong'}`}>
             {feedback}

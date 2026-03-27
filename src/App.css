@@ -3,10 +3,11 @@
 :root {
     --stat-black: #000000;
     --stat-white: #FFFFFF;
-    --stat-gray-divider: #DDDDDD;
+    --stat-gray-divider: #BBBBBB; 
     --stat-gray-bg: #F8F8F8;
-    --stat-success: #007F3E;
-    --stat-error: #D0021B;
+    --stat-success: #4DC14D;
+    --stat-error: #DC1919;
+    --stat-blue: #0F4FEF;
     --grid-step: 20px; 
 }
 
@@ -17,74 +18,90 @@ body {
     color: var(--stat-black);
 }
 
-/* --- THE GRID HEADER --- */
+/* --- HEADER --- */
+.header-wrapper {
+    width: 100%;
+}
+
+/* Top black bar (social media mimic) */
+.official-black-bar {
+    height: 40px;
+    background-color: var(--stat-black);
+    width: 100%;
+}
+
+/* Header with dotted grid background */
 .app-header {
     background-color: var(--stat-white);
-    border-bottom: 1px solid var(--stat-gray-divider);
-    background-image: radial-gradient(circle, var(--stat-gray-divider) 0.8px, transparent 0.8px);
+    background-image: radial-gradient(circle, #CCCCCC 1px, transparent 0.9px);
     background-size: var(--grid-step) var(--grid-step);
-    background-position: center top; 
-    padding: 30px 0; 
+    background-position: 60px 0px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    position: relative;
 }
 
+/* Content wrapper inside header */
 .header-content {
-    max-width: 1200px; 
-    margin: 0 auto;
-    padding: 0 60px; 
+    width: 100%;
+    padding: 0 60px;
     display: flex;
-    justify-content: flex-start; 
     align-items: center;
 }
 
-.logo-container {
+/* White mask behind logo to block background dots */
+.logo-mask {
     background-color: var(--stat-white);
-    padding: 10px; 
     display: flex;
     align-items: center;
-    justify-content: center;
+    z-index: 2;
+    height: 60px;
+    transform: translateX(-22px);
 }
 
+/* Logo image */
 .stat-logo {
-    height: 60px; 
+    height: 60px;
     width: auto;
     display: block;
-    margin-top: 0; 
-    margin-left: -2.3px; 
-    image-rendering: pixelated;
 }
 
+/* Divider between logo and title */
 .header-divider {
     width: 1px;
     height: 40px;
     background-color: var(--stat-gray-divider);
-    margin: 0 30px;
+    margin: 0 40px;
 }
 
+/* Header title typography */
 .header-title {
     font-size: 1.25rem;
     font-weight: 700;
     text-transform: uppercase;
     margin: 0;
-    letter-spacing: 0.5px;
+    line-height: 1.2;
 }
 
-/* --- MAIN CONTENT AREA --- */
+.text-mask {
+  background-color: var(--stat-white);
+  display: inline-block;
+  padding: 0 10px;
+  position: relative;
+  top: 6px;
+  z-index: 2;
+  line-height: 1.2;
+}
+
+/* --- MAIN LAYOUT --- */
 .container {
     max-width: 800px;
     margin: 40px auto;
     padding: 0 40px;
 }
 
-.step-indicator {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #565656;
-    text-transform: uppercase;
-    display: block;
-    margin-bottom: 15px;
-}
-
-/* --- ANSWER BOXES (Vertical stacking fixed) --- */
+/* --- QUIZ ELEMENTS --- */
 .options-list {
     display: flex;
     flex-direction: column; 
@@ -92,6 +109,7 @@ body {
     margin-top: 30px;
 }
 
+/* Buttons styling */
 button {
     font-family: 'Roboto', sans-serif;
     background: var(--stat-white);
@@ -103,20 +121,20 @@ button {
     text-transform: uppercase;
     width: 100%; 
     box-sizing: border-box;
-    transition: background 0.1s;
+    transition: background 0.1s, box-shadow 0.1s;
 }
 
+/* Hover effect with subtle left border */
 button:hover:not(:disabled) {
     background-color: var(--stat-gray-bg);
-    box-shadow: -6px 0 0 var(--stat-black);
+    box-shadow: -4px 0 0 var(--stat-black);
 }
 
-/* --- TABLE STYLING --- */
+/* --- RESULTS TABLE --- */
 .results-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 40px;
-    font-size: 1rem;
 }
 
 .results-table th {
@@ -131,51 +149,46 @@ button:hover:not(:disabled) {
 .results-table td {
     padding: 20px 10px;
     border-bottom: 1px solid var(--stat-gray-divider);
-    vertical-align: top;
 }
 
-.retry-btn {
-    width: auto;           
-    min-width: 200px;      
-    padding: 16px 40px;    
-    margin-top: 40px;      
-    display: inline-block; 
-    text-align: center;    
-}
+/* Result status colors */
+.status-correct { color: var(--stat-success); font-weight: 700; }
+.status-wrong { color: var(--stat-error); font-weight: 700; }
 
-.status-correct { 
-    color: var(--stat-success); 
-    font-weight: 700; 
-}
-
-.status-wrong { 
-    color: var(--stat-error); 
-    font-weight: 700; 
-}
-
+/* Score display */
 .score-display {
     font-size: 4rem;
     font-weight: 900;
     margin: 20px 0;
 }
 
-/* --- FEEDBACK ALERTS --- */
-.feedback-alert {
-    margin-top: 30px;
-    padding: 1.5rem;
-    border-left: 8px solid;
-    font-weight: 700;
-}
-
+/* Personalized feedback */
 .personalized-message {
     font-size: 1.25rem;
     font-weight: 700;
-    margin: 20px 0 40px 0;
-    line-height: 1.4;
-    max-width: 600px;
+    margin-bottom: 40px;
     border-left: 4px solid var(--stat-black);
     padding-left: 20px;
+    line-height: 1.4;
 }
 
-.feedback-alert.correct { background: #F2F8F5; border-color: var(--stat-success); color: var(--stat-success); }
-.feedback-alert.wrong { background: #FDF2F2; border-color: var(--stat-error); color: var(--stat-error); }
+/* --- ALERTS --- */
+/* Feedback for correct/wrong answers */
+.feedback-alert {
+    margin-top: 30px;
+    padding: 20px 24px;
+    border: 1px solid var(--stat-gray-divider); 
+    border-left: 4px solid; 
+    font-weight: 700;
+}
+
+.feedback-alert.correct { 
+    border-color: var(--stat-success); 
+}
+
+.feedback-alert.wrong { 
+    border-color: var(--stat-error); 
+}
+
+.feedback-alert.correct { border-left-color: var(--stat-success); }
+.feedback-alert.wrong { border-left-color: var(--stat-error); }
